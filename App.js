@@ -9,6 +9,9 @@ export default function App() {
   const [isAddMode, setIsAddMode] = useState(false);
 
   const addGoalHandler = (enteredGoal) => {
+    if(enteredGoal && enteredGoal.length  === 0){
+      return;
+    }
     setCourseGoals((currentGoals) => [
       ...courseGoals,
       { id: Math.random().toString(), value: enteredGoal },
@@ -17,28 +20,31 @@ export default function App() {
   };
 
   const deleteGoalItem = (goalId) => {
+    console.log(`Goal Id: ${goalId}`);
     setCourseGoals((currentGoals) =>
       courseGoals.filter((goal) => goal.id !== goalId)
     );
   };
 
   return (
-    <ScrollView>
-      <View style={styles.screen}>
-        <Button title="Add Goal Item" onPress={() => setIsAddMode(true)} />
-        <GoalInput visible={isAddMode} onAddGoalHandler={addGoalHandler} />
-        <FlatList
-          keyExtractor={(item, index) => item.id}
-          data={courseGoals}
-          renderItem={(itemData) => (
-            <GoalItem
-              onDelete={deleteGoalItem.bind(this, itemData.item.id)}
-              title={itemData.item.value}
-            />
-          )}
-        />
-      </View>
-    </ScrollView>
+    <View style={styles.screen}>
+      <Button title="Add Goal Item" onPress={() => setIsAddMode(true)} />
+      <GoalInput
+        visible={isAddMode}
+        onAddGoalHandler={addGoalHandler}
+        onCancelModel={() => setIsAddMode(false)}
+      />
+      <FlatList
+        keyExtractor={(item, index) => item.id}
+        data={courseGoals}
+        renderItem={(itemData) => (
+          <GoalItem
+            onDelete={deleteGoalItem.bind(this, itemData.item.id)}
+            title={itemData.item.value}
+          />
+        )}
+      />
+    </View>
   );
 }
 
